@@ -24,6 +24,8 @@ import {
   Edit3,
   Trash2
 } from 'lucide-react';
+
+
 import GlassCard from './components/GlassCard';
 
 
@@ -52,11 +54,11 @@ const [joystickPos, setJoystickPos]             = useState({ x: 0, y: 0 });
   const joystickRef = useRef(null);
 
 const navIcons = {
-  home:    Home,
-  party:   Martini,
-  aura:    Heart,
+  home: Home,
+  party: Martini,
+  aura: Heart,
   friends: Users,
-  afterparty: Camera
+  afterparty: Camera,
 };
 
 
@@ -149,14 +151,13 @@ const navIcons = {
     photos: []
   });
 
-  const zones = [
-    { id: 'home', name: 'Home', icon: '🏠' },
-    { id: 'party', name: 'Life of the Party', icon: '🎉' },
-    { id: 'aura', name: 'Fling', icon: '💕' },
-    { id: 'friends', name: 'Fam Zone', icon: '👥' },
-    { id: 'afterparty', name: 'After Party', icon: '📸' }
-  ];
-
+const zones = [
+  { id: 'home',       label: 'Home',             Icon: Home },
+  { id: 'party',      label: 'Life of the Party', Icon: Martini },
+  { id: 'aura',       label: 'Flings',           Icon: Heart },
+  { id: 'friends',    label: 'Mandem',           Icon: Users },
+  { id: 'afterparty', label: 'After Party',      Icon: Camera },
+];
   const [parties, setParties] = useState([
     {
       id: 1,
@@ -1010,15 +1011,22 @@ const navIcons = {
     </div>
   );
 
-  const ZoneCard = ({ zone, onClick }) => (
+  // inside your Yukta component
+function ZoneCard({ zone, onClick }) {
+  const Icon = zone.icon;
+  return (
     <div
       onClick={onClick}
       className="bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 p-6 rounded-3xl cursor-pointer hover:scale-105 hover:border-purple-500/50 transition-all duration-300 text-center group"
     >
-      <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">{zone.icon}</div>
-      <h3 className="text-white font-bold text-sm">{zone.name}</h3>
+      <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300 text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-pink-400 inline-block">
+        <Icon />
+      </div>
+      {/* If you still want labels under the icons, you can keep these */}
+      {/* <h3 className="text-white font-bold text-sm mt-2">{zone.name}</h3> */}
     </div>
   );
+}
 
   const renderZoneContent = () => {
     console.log('Current Zone:', currentZone); // Debug log
@@ -1151,11 +1159,11 @@ const navIcons = {
         return (
           <div className="space-y-6">
             <div className="text-center py-6">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-                Hey {user.name}! 👋
-              </h1>
-              <p className="text-gray-400">Ready to vibe tonight?</p>
-            </div>
+  <h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 mb-2">
+    Hey {user.name}! 👋
+  </h1>
+  <p className="text-gray-400 text-lg">Ready to vibe tonight?</p>
+</div>
             
             <div className="grid grid-cols-2 gap-4 mb-6">
               <StatCard 
@@ -1179,15 +1187,19 @@ const navIcons = {
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
-              {zones.slice(1, 5).map(zone => (
-                <ZoneCard 
-                  key={zone.id} 
-                  zone={zone} 
-                  onClick={() => setCurrentZone(zone.id)}
-                />
-              ))}
-            </div>
+           <div className="grid grid-cols-2 gap-4">
+  {zones.slice(1).map(({ id, Icon, label }) => (
+    <button
+      key={id}
+      onClick={() => setCurrentZone(id)}
+      className="bg-gray-900/50 backdrop-blur-sm rounded-3xl p-6 flex flex-col items-center justify-center hover:border-purple-500/50 transition-all duration-300"
+    >
+      <Icon className="w-8 h-8 mb-2 text-gray-400" />
+      <span className="text-white font-medium">{label}</span>
+    </button>
+  ))}
+</div>
+
           </div>
         );
 
@@ -1400,29 +1412,44 @@ const navIcons = {
         {renderZoneContent()}
       </main>
 
-     {/* Bottom Navigation */}
-<div className="fixed bottom-0 left-0 right-0 bg-white/5 backdrop-blur-lg border-t border-white/10">
+ {/* Bottom Navigation */}
+<div className="fixed bottom-0 left-0 right-0 bg-black/20 backdrop-blur-lg border-t border-gray-800">
   <div className="max-w-md mx-auto px-2 py-2">
     <div className="flex justify-between items-center">
       {zones.slice(0,5).map(zone => {
         const isActive = currentZone === zone.id;
-        const IconComponent = navIcons[zone.id];          // <-- a function/class
+        const IconComponent = navIcons[zone.id];
+
         return (
           <button
             key={zone.id}
             onClick={() => setCurrentZone(zone.id)}
             className="flex-1 flex items-center justify-center"
           >
-            {/* 1px gradient ring when active */}
-            <div className={isActive
-              ? "p-0.5 rounded-full bg-gradient-to-br from-pink-500 to-purple-500"
-              : ""
-            }>
-              {/* inner circle */}
-              <div className="p-2 bg-gray-900/20 rounded-full">
-                {/* now render it as a component */}
+            {/* only render the gradient ring when active */}
+            <div
+              className={`
+                rounded-full
+                ${isActive
+                  ? "p-[1px] bg-gradient-to-br from-pink-500 to-purple-500"
+                  : ""
+                }
+              `}
+            >
+              {/* the dark backdrop behind the icon */}
+              <div
+                className={`
+                  rounded-full
+                  p-2
+                  bg-black/50
+                  transition-colors duration-200
+                `}
+              >
                 <IconComponent
-                  className={`${isActive ? "text-white" : "text-gray-500"} text-xl`}
+                  className={`
+                    w-6 h-6
+                    ${isActive ? "text-white" : "text-gray-400"}
+                  `}
                 />
               </div>
             </div>
