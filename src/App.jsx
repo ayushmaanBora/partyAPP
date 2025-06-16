@@ -52,11 +52,11 @@ const [joystickPos, setJoystickPos]             = useState({ x: 0, y: 0 });
   const joystickRef = useRef(null);
 
 const navIcons = {
-  home: <Home />,
-  party: <Martini/>,
-  aura: <Heart />,
-  friends: <Users />,
-  afterparty: <Camera />
+  home:    Home,
+  party:   Martini,
+  aura:    Heart,
+  friends: Users,
+  afterparty: Camera
 };
 
 
@@ -1366,7 +1366,7 @@ const navIcons = {
  backdrop-blur-lg border-b border-gray-800/50 z-50">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
           <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Yukta
+            YAPP
           </div>
           
           <div className="flex items-center space-x-3">
@@ -1400,29 +1400,31 @@ const navIcons = {
         {renderZoneContent()}
       </main>
 
-      {/* Bottom Navigation */}
-<div className="fixed bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm border-t border-gray-800 z-50">
-  <div className="max-w-md mx-auto px-2">
-    <div className="flex justify-between items-center py-2">
-      {zones.slice(0, 5).map(zone => {
+     {/* Bottom Navigation */}
+<div className="fixed bottom-0 left-0 right-0 bg-white/5 backdrop-blur-lg border-t border-white/10">
+  <div className="max-w-md mx-auto px-2 py-2">
+    <div className="flex justify-between items-center">
+      {zones.slice(0,5).map(zone => {
         const isActive = currentZone === zone.id;
+        const IconComponent = navIcons[zone.id];          // <-- a function/class
         return (
           <button
             key={zone.id}
             onClick={() => setCurrentZone(zone.id)}
-            className={`
-              p-3 rounded-2xl transition-all duration-200 
-              ${isActive
-                ? 'bg-gradient-to-t from-purple-600/30 to-pink-600/30 shadow-lg shadow-purple-500/20'
-                : 'hover:bg-white/10'}
-            `}
+            className="flex-1 flex items-center justify-center"
           >
-            <div className={`
-              ${isActive 
-                ? 'bg-gradient-to-br from-purple-400 to-pink-400 text-white p-2 rounded-full'
-                : 'text-gray-400'}
-            `}>
-              {navIcons[zone.id]}
+            {/* 1px gradient ring when active */}
+            <div className={isActive
+              ? "p-0.5 rounded-full bg-gradient-to-br from-pink-500 to-purple-500"
+              : ""
+            }>
+              {/* inner circle */}
+              <div className="p-2 bg-gray-900/20 rounded-full">
+                {/* now render it as a component */}
+                <IconComponent
+                  className={`${isActive ? "text-white" : "text-gray-500"} text-xl`}
+                />
+              </div>
             </div>
           </button>
         );
@@ -1430,6 +1432,7 @@ const navIcons = {
     </div>
   </div>
 </div>
+
 
       {/* Profile Modal */}
       <Modal isOpen={showProfile} onClose={() => setShowProfile(false)} title="Your Profile">
