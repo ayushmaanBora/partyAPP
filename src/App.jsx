@@ -1,5 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, Users, Calendar, MessageCircle, Star, Trophy, MapPin, Clock, User, Settings, Bell, Search, Plus, Filter, X, Send, SkipForward, Camera, Save, Edit3, Trash2 } from 'lucide-react';
+import {
+  Home,
+  Martini,
+  Heart,
+  Users,
+  Calendar,
+  MessageCircle,
+  Star,
+  Trophy,
+  MapPin,
+  Clock,
+  User,
+  Settings,
+  Bell,
+  Search,
+  Plus,
+  Filter,
+  X,
+  Send,
+  SkipForward,
+  Camera,
+  Save,
+  Edit3,
+  Trash2
+} from 'lucide-react';
 import GlassCard from './components/GlassCard';
 
 
@@ -18,14 +42,23 @@ const Yukta = () => {
   const [likedParties, setLikedParties] = useState(new Set());
   const [joinedParties, setJoinedParties] = useState(new Set());
   const [sentPrompts, setSentPrompts] = useState(new Set());
- const [joystickActive, setJoystickActive] = useState(false);
-  const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 });
-
+const [joystickActive, setJoystickActive]       = useState(false);
+const [targetJoystickPos, setTargetJoystickPos] = useState({ x: 0, y: 0 });
+const [joystickPos, setJoystickPos]             = useState({ x: 0, y: 0 });
   const [selectedPrompt, setSelectedPrompt] = useState('');
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
   const [editingInterest, setEditingInterest] = useState('');
   const [editingPrompt, setEditingPrompt] = useState('');
   const joystickRef = useRef(null);
+
+const navIcons = {
+  home: <Home />,
+  party: <Martini/>,
+  aura: <Heart />,
+  friends: <Users />,
+  afterparty: <Camera />
+};
+
 
   const [user, setUser] = useState({
     name: 'Alex',
@@ -709,7 +742,8 @@ const Yukta = () => {
     const maxDistance = 40;
     
     if (distance <= maxDistance) {
-      setJoystickPosition({ x: deltaX, y: deltaY });
+     setTargetJoystickPos({ x: deltaX, y: deltaY });
+
       
       // Determine prompt based on direction
       const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
@@ -731,7 +765,7 @@ const Yukta = () => {
       handleSendPrompt(matches[currentMatchIndex].id, selectedPrompt);
     }
     setJoystickActive(false);
-    setJoystickPosition({ x: 0, y: 0 });
+     setTargetJoystickPos({ x: 0, y: 0 });
     setSelectedPrompt('');
   };
 
@@ -758,6 +792,35 @@ const Yukta = () => {
       document.removeEventListener('touchend', handleGlobalEnd);
     };
   }, [joystickActive]);
+
+ useEffect(() => {
+
+   let frameID;
+  let running = true;
+
+   const animate = () => {
+     setJoystickPos(prev => {
+       const dx = (targetJoystickPos.x - prev.x) * 0.2;
+       const dy = (targetJoystickPos.y - prev.y) * 0.2;
+     // if we’re very close, snap & stop
+      if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) {
+  running = false;
+        return { x: targetJoystickPos.x, y: targetJoystickPos.y };
+}
+       return { x: prev.x + dx, y: prev.y + dy };
+     });
+
+    if (running) frameID = requestAnimationFrame(animate);
+   };
+
+   frameID = requestAnimationFrame(animate);
+
+  return () => {
+  running = false;
+    cancelAnimationFrame(frameID);
+  };
+}, [targetJoystickPos]);
+
 
   const Modal = ({ isOpen, onClose, title, children, fullHeight = false }) => {
     if (!isOpen) return null;
@@ -878,7 +941,7 @@ const Yukta = () => {
             className={`absolute w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full shadow-md transition-all duration-150 pointer-events-none ${
               joystickActive ? 'scale-110' : 'scale-100'
             }`}
-            style={{
+            style={{   transform: `translate(${joystickPos.x}px, ${joystickPos.y}px)`
             }}
           />
           
@@ -1338,26 +1401,35 @@ const Yukta = () => {
       </main>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/5 backdrop-blur-lg border-t border-white/10">
-        <div className="max-w-md mx-auto px-2">
-          <div className="flex justify-between items-center py-2">
-            {zones.slice(0, 5).map(zone => (
-              <button
-                key={zone.id}
-                onClick={() => setCurrentZone(zone.id)}
-                className={`flex flex-col items-center p-3 rounded-2xl transition-all duration-300 min-w-[60px] ${
-                  currentZone === zone.id 
-                    ? 'bg-gradient-to-t from-purple-600/20 to-pink-600/20 border border-purple-500/30 text-purple-400 shadow-lg shadow-purple-500/20' 
-                    : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/50'
-                }`}
-              >
-                <span className="text-xl mb-1">{zone.icon}</span>
-                <span className="text-xs font-medium">{zone.id === 'aura' ? 'Fling' : zone.id === 'afterparty' ? 'After' : zone.name.split(' ')[0]}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+<div className="fixed bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm border-t border-gray-800 z-50">
+  <div className="max-w-md mx-auto px-2">
+    <div className="flex justify-between items-center py-2">
+      {zones.slice(0, 5).map(zone => {
+        const isActive = currentZone === zone.id;
+        return (
+          <button
+            key={zone.id}
+            onClick={() => setCurrentZone(zone.id)}
+            className={`
+              p-3 rounded-2xl transition-all duration-200 
+              ${isActive
+                ? 'bg-gradient-to-t from-purple-600/30 to-pink-600/30 shadow-lg shadow-purple-500/20'
+                : 'hover:bg-white/10'}
+            `}
+          >
+            <div className={`
+              ${isActive 
+                ? 'bg-gradient-to-br from-purple-400 to-pink-400 text-white p-2 rounded-full'
+                : 'text-gray-400'}
+            `}>
+              {navIcons[zone.id]}
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  </div>
+</div>
 
       {/* Profile Modal */}
       <Modal isOpen={showProfile} onClose={() => setShowProfile(false)} title="Your Profile">
