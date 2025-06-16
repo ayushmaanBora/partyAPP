@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart, Users, Calendar, MessageCircle, Star, Trophy, MapPin, Clock, User, Settings, Bell, Search, Plus, Filter, X, Send, SkipForward, Camera, Save, Edit3, Trash2 } from 'lucide-react';
+import GlassCard from './components/GlassCard';
+
 
 const Yukta = () => {
   const [currentZone, setCurrentZone] = useState('home');
@@ -16,8 +18,9 @@ const Yukta = () => {
   const [likedParties, setLikedParties] = useState(new Set());
   const [joinedParties, setJoinedParties] = useState(new Set());
   const [sentPrompts, setSentPrompts] = useState(new Set());
-  const [joystickActive, setJoystickActive] = useState(false);
+ const [joystickActive, setJoystickActive] = useState(false);
   const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 });
+
   const [selectedPrompt, setSelectedPrompt] = useState('');
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
   const [editingInterest, setEditingInterest] = useState('');
@@ -307,7 +310,7 @@ const Yukta = () => {
             </div>
 
             {/* Trending Activities */}
-            <div className="bg-gray-900/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50">
+            <GlassCard className="p-6 border border-gray-700/50">
               <h2 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
                 <span>🔥</span>
                 <span>Trending Activities</span>
@@ -333,7 +336,7 @@ const Yukta = () => {
               <button className="w-full mt-4 bg-gray-800 border border-gray-700 text-gray-300 py-2 rounded-2xl text-sm hover:bg-gray-700 transition-colors">
                 View All Trends
               </button>
-            </div>
+           </GlassCard>
 
             {/* After Party Feed */}
             <div className="space-y-4">
@@ -429,7 +432,7 @@ const Yukta = () => {
             </div>
 
             {/* Trending Activities */}
-            <div className="bg-gray-900/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50">
+            <GlassCard className="p-6 border border-gray-700/50">
               <h2 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
                 <span>🔥</span>
                 <span>Trending Activities</span>
@@ -455,7 +458,7 @@ const Yukta = () => {
               <button className="w-full mt-4 bg-gray-800 border border-gray-700 text-gray-300 py-2 rounded-2xl text-sm hover:bg-gray-700 transition-colors">
                 View All Trends
               </button>
-            </div>
+            </GlassCard>
 
             {/* After Party Feed */}
             <div className="space-y-4">
@@ -684,7 +687,7 @@ const Yukta = () => {
     setShowFamProfile(true);
   };
 
-  // Joystick mechanics
+   // Joystick mechanics
   const handleJoystickStart = (e) => {
     e.preventDefault();
     setJoystickActive(true);
@@ -775,9 +778,8 @@ const Yukta = () => {
       </div>
     );
   };
-
   const PartyCard = ({ party }) => (
-    <div className="bg-gray-900/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20">
+    <GlassCard className="p-6 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20">
       <div className={`bg-gradient-to-r ${party.gradient} rounded-2xl p-5 mb-4 text-white relative overflow-hidden`}>
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative z-10">
@@ -835,7 +837,7 @@ const Yukta = () => {
           <Heart className={`w-5 h-5 ${likedParties.has(party.id) ? 'fill-current' : 'text-gray-400'}`} />
         </button>
       </div>
-    </div>
+    </GlassCard>
   );
 
   const JoystickController = () => {
@@ -877,7 +879,6 @@ const Yukta = () => {
               joystickActive ? 'scale-110' : 'scale-100'
             }`}
             style={{
-              transform: `translate(${joystickPosition.x}px, ${joystickPosition.y}px)`
             }}
           />
           
@@ -896,7 +897,7 @@ const Yukta = () => {
   };
 
   const FlingMatchCard = ({ match }) => (
-    <div className="bg-gray-900/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50 hover:border-pink-500/50 transition-all duration-300">
+    <GlassCard className="p-6 border border-gray-700/50 hover:border-pink-500/50 transition-all duration-300">
       <div className="text-center mb-4">
         <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-2xl mb-3 mx-auto shadow-lg shadow-pink-500/25">
           {match.avatar}
@@ -929,7 +930,7 @@ const Yukta = () => {
           <JoystickController />
         </div>
       )}
-    </div>
+    </GlassCard>
   );
 
   const StatCard = ({ title, value, icon, gradient }) => (
@@ -976,7 +977,7 @@ const Yukta = () => {
           </div>
 
           {/* Trending Activities */}
-          <div className="bg-gray-900/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50">
+          <GlassCard className="p-6 border border-gray-700/50">
             <h2 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
               <span>🔥</span>
               <span>Trending Activities</span>
@@ -1002,7 +1003,7 @@ const Yukta = () => {
             <button className="w-full mt-4 bg-gray-800 border border-gray-700 text-gray-300 py-2 rounded-2xl text-sm hover:bg-gray-700 transition-colors">
               View All Trends
             </button>
-          </div>
+          </GlassCard>
 
           {/* After Party Feed */}
           <div className="space-y-4">
@@ -1246,7 +1247,7 @@ const Yukta = () => {
               <p className="text-gray-400 text-sm">Your chosen family</p>
             </div>
             
-            <div className="bg-gray-900/50 backdrop-blur-sm rounded-3xl p-6 border border-gray-700/50">
+            <GlassCard className="p-6 border border-gray-700/50">
               <h2 className="text-lg font-bold text-white mb-4">Your Fam (12)</h2>
               <div className="grid grid-cols-2 gap-3">
                 {famMembers.map((member) => (
@@ -1260,7 +1261,7 @@ const Yukta = () => {
                   </div>
                 ))}
               </div>
-            </div>
+            </GlassCard>
             
             <button 
               onClick={() => setShowAddFam(true)}
@@ -1298,7 +1299,8 @@ const Yukta = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       {/* Header */}
-      <header className="sticky top-0 bg-black/80 backdrop-blur-lg border-b border-gray-800/50 z-50">
+      <header className="sticky top-0 bg-white/5 backdrop-blur-lg
+ backdrop-blur-lg border-b border-gray-800/50 z-50">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
           <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
             Yukta
@@ -1336,7 +1338,7 @@ const Yukta = () => {
       </main>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-lg border-t border-gray-800/50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/5 backdrop-blur-lg border-t border-white/10">
         <div className="max-w-md mx-auto px-2">
           <div className="flex justify-between items-center py-2">
             {zones.slice(0, 5).map(zone => (
